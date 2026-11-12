@@ -152,16 +152,4 @@ resource "azurerm_linux_virtual_machine" "internal" {
     }
   }
 
-  # The private IP is owned by the NIC. If a NIC is ever recreated, its IP
-  # moves before the VM's state refreshes, producing a phantom in-place
-  # update on a computed field. Ignore the VM's stale copy; the NIC resource
-  # remains the source of truth.
-  # NOTE: ignore_changes entries must be real arguments of this resource.
-  # NSG bindings are NOT an attribute here -- they are managed by the
-  # azurerm_network_interface_security_group_association resources.
-  lifecycle {
-    ignore_changes = [
-      private_ip_address,
-    ]
-  }
 }

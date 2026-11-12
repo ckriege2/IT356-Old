@@ -20,6 +20,11 @@ variable "vnet_address_space" {
   description = "Address space for the Virtual Network"
   type        = list(string)
   default     = ["172.21.0.0/16"]
+
+  validation {
+    condition     = length(var.vnet_address_space) > 0 && alltrue([for p in var.vnet_address_space : can(cidrhost(p, 0))])
+    error_message = "vnet_address_space must be a non-empty list of valid CIDR blocks, e.g. [\"172.21.0.0/16\"]."
+  }
 }
 
 variable "external_subnet_name" {
@@ -32,6 +37,11 @@ variable "external_subnet_prefix" {
   description = "Address prefix for the external subnet"
   type        = list(string)
   default     = ["172.21.0.0/24"]
+
+  validation {
+    condition     = length(var.external_subnet_prefix) > 0 && alltrue([for p in var.external_subnet_prefix : can(cidrhost(p, 0))])
+    error_message = "external_subnet_prefix must be a non-empty list of valid CIDR blocks, e.g. [\"172.21.0.0/24\"]."
+  }
 }
 
 variable "internal_subnet_name" {
@@ -44,6 +54,11 @@ variable "internal_subnet_prefix" {
   description = "Address prefix for the internal subnet"
   type        = list(string)
   default     = ["172.21.1.0/24"]
+
+  validation {
+    condition     = length(var.internal_subnet_prefix) > 0 && alltrue([for p in var.internal_subnet_prefix : can(cidrhost(p, 0))])
+    error_message = "internal_subnet_prefix must be a non-empty list of valid CIDR blocks, e.g. [\"172.21.1.0/24\"]."
+  }
 }
 
 variable "vm_size" {
@@ -56,6 +71,11 @@ variable "os_disk_size_gb" {
   description = "Size of the OS disk in GiB. AlmaLinux marketplace images require a minimum of 30 GiB."
   type        = number
   default     = 30
+
+  validation {
+    condition     = var.os_disk_size_gb >= 30
+    error_message = "os_disk_size_gb must be at least 30 GiB (the AlmaLinux community image VHD is 30 GiB; smaller values fail at apply time)."
+  }
 }
 
 variable "external_nsg_name" {
