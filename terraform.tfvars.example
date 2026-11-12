@@ -1,0 +1,27 @@
+# Azure Region
+location = "northcentralus"
+
+# Resource Naming
+resource_group_name  = "qwen-f26"
+vnet_name            = "qwen-f26"
+external_subnet_name = "f26-external"
+internal_subnet_name = "f26-internal"
+external_nsg_name    = "F26-ext-ssh"
+internal_nsg_name    = "f26-int-ssh"
+
+# Network Address Spaces
+vnet_address_space     = ["172.21.0.0/16"]
+external_subnet_prefix = ["172.21.0.0/24"]
+internal_subnet_prefix = ["172.21.1.0/24"]
+
+# Virtual Machines
+vm_size         = "Standard_B2ats_v2"
+os_disk_size_gb = 30
+admin_username  = "azureuser"
+
+# SSH Security
+# To lock down external SSH to your own workstation IP, change to e.g. "203.0.113.45/32"
+ssh_source_address_prefix = "*"
+
+# Optional: provide your own public key (otherwise a 4096-bit RSA key is auto-generated)
+# ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2E..."

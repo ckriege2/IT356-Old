@@ -1,0 +1,21 @@
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude sensitive files and plans
+*.tfvars
+!terraform.tfvars.example
+*.tfplan
+*.tfrc
+
+# Generated SSH keys
+id_rsa
+id_rsa.pub
+*.pem
