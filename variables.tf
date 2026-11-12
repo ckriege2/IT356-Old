@@ -121,9 +121,9 @@ variable "ssh_source_address_prefix" {
 }
 
 variable "internal_ssh_source_address_prefix" {
-  description = "Allowed source prefix for internal SSH access. Matches VNet address space."
+  description = "Allowed source prefix for internal SSH access. Defaults to the external subnet so only the jump host can connect."
   type        = string
-  default     = "172.21.0.0/16"
+  default     = "172.21.0.0/24"
 }
 
 variable "image_publisher" {

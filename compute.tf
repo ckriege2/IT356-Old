@@ -49,6 +49,8 @@ resource "azurerm_network_interface" "external" {
 }
 
 # Attach NSG F26-ext-ssh to the external VM's network interface
+# (NIC-level rather than subnet-level: the external subnet stays reusable
+#  for resources that should not inherit this NSG.)
 resource "azurerm_network_interface_security_group_association" "external_nic_assoc" {
   network_interface_id      = azurerm_network_interface.external.id
   network_security_group_id = azurerm_network_security_group.ext_ssh.id
@@ -107,12 +109,6 @@ resource "azurerm_network_interface" "internal" {
     subnet_id                     = azurerm_subnet.internal.id
     private_ip_address_allocation = "Dynamic"
   }
-}
-
-# Attach NSG f26-int-ssh to the internal VM's network interface
-resource "azurerm_network_interface_security_group_association" "internal_nic_assoc" {
-  network_interface_id      = azurerm_network_interface.internal.id
-  network_security_group_id = azurerm_network_security_group.int_ssh.id
 }
 
 resource "azurerm_linux_virtual_machine" "internal" {

@@ -25,7 +25,7 @@ This Terraform project provisions a small, secure two-tier Azure environment wit
                        |    |   +------------------┬------------------+   |    |
                        |    +----------------------│----------------------+    |
                        |                           │ SSH (Port 22)             |
-                       |                           │ (from 172.21.0.0/16)      |
+                       |                           │ (from 172.21.0.0/24)      |
                        |    +----------------------▼----------------------+    |
                        |    | Subnet: f26-internal (172.21.1.0/24)        |    |
                        |    |                                             |    |
@@ -34,7 +34,7 @@ This Terraform project provisions a small, secure two-tier Azure environment wit
                        |    |   | Size: Standard_B2ats_v2             |   |    |
                        |    |   | OS: AlmaLinux 9 Gen2                |   |    |
                        |    |   | Disk: 30 GB                         |   |    |
-                       |    |   | NSG: f26-int-ssh (Allow 22 from VNet|   |    |
+                       |    |   | NSG: f26-int-ssh (Allow 22 from ext)|   |    |
                        |    |   +-------------------------------------+   |    |
                        |    +---------------------------------------------+    |
                        +-------------------------------------------------------+
@@ -53,7 +53,7 @@ This Terraform project provisions a small, secure two-tier Azure environment wit
 | **External Linux VM** | `azurerm_linux_virtual_machine` | `f26-external-vm` | Size: `Standard_B2ats_v2`, AlmaLinux 9 Gen2, 30 GB disk |
 | **External NSG** | `azurerm_network_security_group` | `F26-ext-ssh` | Allows inbound TCP 22 from external (`*` / Internet), attached to external VM NIC |
 | **Internal Linux VM** | `azurerm_linux_virtual_machine` | `f26-internal-vm` | Size: `Standard_B2ats_v2`, AlmaLinux 9 Gen2, 30 GB disk |
-| **Internal NSG** | `azurerm_network_security_group` | `f26-int-ssh` | Allows inbound TCP 22 from `172.21.0.0/16` (`VirtualNetwork`), attached to all internal VM NICs (and internal subnet) |
+| **Internal NSG** | `azurerm_network_security_group` | `f26-int-ssh` | Allows inbound TCP 22 from `172.21.0.0/24` (external subnet), attached to the internal subnet (covers all NICs in it) |
 | **External Public IP** | `azurerm_public_ip` | `pip-f26-external-vm` | Standard SKU, Static allocation, attached to external VM NIC |
 
 ---
@@ -119,7 +119,7 @@ ssh -i id_rsa azureuser@<EXTERNAL_PUBLIC_IP>
 ```
 
 ### 2. Jump Host SSH to Internal VM
-The internal VM has no public IP and only allows SSH from within the virtual network (`172.21.0.0/16`). You can connect to it securely using the external VM as a jump host (`ProxyJump` / `-J`):
+The internal VM has no public IP and only allows SSH from the external subnet (`172.21.0.0/24`), i.e. via the jump host. You can connect to it securely using the external VM as a jump host (`ProxyJump` / `-J`):
 ```bash
 ssh -J azureuser@<EXTERNAL_PUBLIC_IP> -i id_rsa azureuser@172.21.1.4
 ```
